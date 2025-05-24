@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+
+  <title>Frontend Mentor | Calculator app</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700" rel="stylesheet">
+
+  <!-- Feel free to remove these styles or customize in your own stylesheet 👍 -->
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* --- Theme 1: Gray (Existing) --- */
+    body[color-theme="gray"] {
+      /* Backgrounds */
+      --main-bg: hsl(222, 26%, 31%);
+      --screen-bg: hsl(224, 36%, 15%);
+      --toggle-keypad-bg: hsl(223, 31%, 20%);
+
+      /* Keys */
+      --key-pri-bg: hsl(30, 25%, 89%);
+      --key-pri-shadow: hsl(28, 16%, 65%);
+
+      --key-sec-bg: hsl(225, 21%, 49%);
+      --key-sec-shadow: hsl(224, 28%, 35%);
+
+      --key-accent-bg: hsl(6, 63%, 50%);
+      --key-accent-shadow: hsl(6, 70%, 34%);
+
+      /* Text */
+      --text-primary: hsl(221, 14%, 31%);
+      --text-secondary: hsl(0, 0%, 100%);
+      --text-accent: hsl(0, 0%, 100%);
+      --text-display:hsl(0, 0%, 100%);
+      --text-alt:hsl(0, 0%, 100%);
+    }
+
+    /* --- Theme 2: White --- */
+    body[color-theme="white"] {
+      /* Backgrounds */
+      --main-bg: hsl(0, 0%, 90%);
+      --screen-bg: hsl(0, 0%, 93%);
+      --toggle-keypad-bg: hsl(0, 5%, 81%);
+
+      /* Keys */
+      --key-pri-bg: hsl(45, 7%, 89%);
+      --key-pri-shadow: hsl(35, 11%, 61%);
+
+      --key-sec-bg: hsl(185, 42%, 37%);
+      --key-sec-shadow: hsl(185, 58%, 25%);
+      /* Very dark cyan */
+
+      --key-accent-bg: hsl(25, 98%, 40%);
+      --key-accent-shadow: hsl(25, 99%, 27%);
+
+      /* Text */
+      --text-primary: hsl(60, 10%, 19%);
+      --text-secondary: hsl(0, 0%, 100%);
+      --text-accent: hsl(0, 0%, 100%);
+      --text-alt:hsl(60, 10%, 19%);
+    }
+    
+    body[color-theme="purple"] {
+      /* Backgrounds */
+      --main-bg: hsl(268, 75%, 9%);
+      --screen-bg: hsl(268, 71%, 12%);
+      --toggle-keypad-bg: hsl(268, 71%, 12%);
+
+      /* Keys */
+      --key-pri-bg: hsl(268, 47%, 21%);
+      --key-pri-shadow: hsl(290, 70%, 36%);
+
+      --key-sec-bg: hsl(281, 89%, 26%);
+      --key-sec-shadow: hsl(285, 91%, 52%);
+
+      --key-accent-bg: hsl(176, 100%, 44%);
+      --key-accent-shadow: hsl(177, 92%, 70%);
+
+
+      /* Text */
+      --text-primary: hsl(52, 100%, 62%);
+      --text-secondary: hsl(0, 0%, 100%);
+      --text-accent: hsl(198, 20%, 13%);
+    }
+
+    .attribution {
+      font-size: 11px;
+      text-align: center;
+      height: 10%;
+    }
+
+    .attribution a {
+      color: hsl(228, 45%, 44%);
+    }
+    /* --- (for Mobile : 375px) --- */
+    body {
+      width: 100vw;
+      height: 100vh;
+      font-size: 1rem;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: var(--text-primary);
+      background: var(--main-bg);
+      transition: background 0.3s ease, color 0.3s ease;
+      font-family: 'League Spartan', sans-serif; 
+    }
+
+    .container {
+      font-family: "Mulish", sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      width: 375px;
+      height: 90%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--main-bg);
+      transition: background 0.3s ease;
+    }
+
+    .calculator>* {
+      border-radius: 1rem;
+    }
+
+    .calculator {
+      height: 95%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .toggle-header {
+      height: 8%;
+      display: flex;
+      align-items: end;
+      color: var(--text-display);
+      transition: color 0.3s ease;
+    }
+
+    .toggle-header>* {
+      width: 50%;
+    }
+
+    .header {
+      height: 100%;
+      display: flex;
+      align-items: end;
+      justify-content: start;
+      padding: 3%;
+      font-size: 1.5rem;
+      width: 65%;
+    }
+
+    .toggle {
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+    }
+
+    .theme {
+      width: 30%;
+      font-size: 0.4em;
+      margin-right: 15%;
+      color: var(--text-alt); 
+      transition: color 0.3s ease;
+    }
+
+    .toggle-box {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      flex-direction: column;
+      width: 60%;
+      height: 100%;
+    }
+
+    .toggle-figure-box {
+      width: 100%;
+      height: 60%;
+      display: flex;
+      align-items: end;
+      padding: 5% 0;
+    }
+
+    .toggle-figures {
+      width: 100%;
+      height: 70%;
+      display: flex;
+      align-items: end;
+      justify-content: space-evenly;
+      font-size: 0.6rem;
+    }
+.toggle-figure{
+      color: var(--text-alt);
+      transition: color 0.3s ease;
+}
+ 
+    .toggle-cover {
+      width: 100%;
+      height: 40%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 5rem;
+      overflow: hidden;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      padding: 5px;
+      background: var(--toggle-keypad-bg);
+        transition: background 0.3s ease;
+      
+    }
+
+    .toggle-container input[type="radio"] {
+opacity: 0;
+display: none;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      aspect-ratio: 1;
+      width: calc((100% - 30px)/3);
+      height: calc(100% - 5px);
+      transition: transform 0.3s ease, background 0.3s ease;
+      z-index: 0;
+      border-radius: 50%;
+      background: var(--key-accent-bg);
+      left: 7px;
+    }
+
+    .toggle-container label {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+
+      transform: translateY(0%);
+      padding: 5px 10px;
+      transition: color 0.3s ease;
+      color: var(--text-primary);
+      z-index: 1;
+    }
+
+    .toggle-container input[type="radio"]:checked+label {
+      color: var(--text-primary);
+    }
+
+    .toggle-container input#toggle-stage-1:checked~.toggle-slider {
+      transform: translateX(0%);
+    }
+
+    .toggle-container input#toggle-stage-2:checked~.toggle-slider {
+      transform: translateX(150%);
+    }
+
+    .toggle-container input#toggle-stage-3:checked~.toggle-slider {
+      transform: translateX(300%);
+    }
+
+    .output-box {
+      height: 17%;
+      background: var(--screen-bg);
+      display: flex;
+      align-items: center;
+      padding: 3%;
+      transition: background 0.3s ease;
+    }
+
+    .output {
+      color: var(--text-alt);
+      width: 100%;
+      height: 60%;
+      text-align: left;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      font-size: 2.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .keypad-box {
+      height: 66%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--toggle-keypad-bg);
+      transition: background 0.3s ease;
+    }
+
+    .column {
+      height: 100%;
+      width: 90%;
+      display: flex;
+      justify-content: space-evenly;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .rows {
+      height: 17%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 5%;
+    }
+
+    button {
+      width: 25%;
+      height: 80%;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      border: none;
+      background: var(--key-pri-bg);
+      box-shadow: 0 .2rem 0 0 var(--key-pri-shadow);
+      font-size: 2rem;
+      color: var(--text-primary);
+      transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, transform 0.1s ease, filter 0.1s ease;
+    }
+    button:active{
+      transform: translateY(5px);
+      filter: brightness(2); 
+      box-shadow: 0 0rem 0 0 var(--key-pri-shadow);
+    }
+
+    .delete,
+    .reset {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+    }
+
+
+    .delete,
+    .reset {
+      background: var(--key-sec-bg);
+      box-shadow: 0 .2rem 0 0 var(--key-sec-shadow);
+      font-size: 1.2rem;
+    }
+
+    .equals {
+      background: var(--key-accent-bg);
+      box-shadow: 0 .2rem 0 0 var(--key-accent-shadow);
+      color: var(--text-accent);
+    }
+    .delete:active,
+    .reset:active {
+        box-shadow: 0 0rem 0 0 var(--key-sec-shadow);
+    }
+   
+    .equals:active {
+        box-shadow: 0 0rem 0 0 var(--key-accent-shadow);
+    }
+
+
+    #row-five>* {
+      width: 50%;
+    }
+
+    /* at least 1440px wide. */
+    @media screen and (min-width: 1440px) {
+      .container {
+        width: 500px;
+      }
+      .toggle-container {
+        padding: 7px 10px;
+      }
+  
+
+    }
+  </style>
+</head>
+
+<body color-theme="gray">
+  <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
+    Coded by <a href="#">Joel Olajire</a>.
+  </div>
+  <div class="container">
+    <div class="calculator">
+      <div class="toggle-header">
+        <div class="header">calc</div>
+        <div class="toggle">
+          <div class="theme">THEME</div>
+
+          <div class="toggle-box">
+            <div class="toggle-figure-box">
+              <div class="toggle-figures">
+
+                <div class="toggle-figure">1</div>
+                <div class="toggle-figure">2</div>
+                <div class="toggle-figure">3</div>
+              </div>
+            </div>
+            <div class="toggle-cover">
+              <div class="toggle-container">
+                <input type="radio" name="radio" id="toggle-stage-1" class="toggle-stages" data-theme="gray" checked>
+                <label for="toggle-stage-1"></label>
+
+
+                <input type="radio" name="radio" id="toggle-stage-2" class="toggle-stages"  data-theme="white">
+                <label for="toggle-stage-2"></label>
+
+
+                <input type="radio" name="radio" id="toggle-stage-3" class="toggle-stages"  data-theme="purple">
+                <label for="toggle-stage-3"></label>
+
+                <div class="toggle-slider"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+      <div class="output-box">
+        <div class="output" id="output">
+          
+        </div>
+      </div>
+      <div class="keypad-box">
+        <div class="column">
+          <div class="rows" id="row-one">
+            <button value="7" onclick="disPlay(this)">7</button>
+            <button value="8" onclick="disPlay(this)">8</button>
+            <button value="9" onclick="disPlay(this)">9</button>
+            <button class="delete" onclick="deLETE()">DEL</button>
+          </div>
+          <div class="rows" id="row-two">
+            <button value="4" onclick="disPlay(this)">4</button>
+            <button value="5" onclick="disPlay(this)">5</button>
+            <button value="6" onclick="disPlay(this)">6</button>
+            <button value="+" onclick="disPlay(this)">+</button>
+          </div>
+          <div class="rows" id="row-three">
+            <button value="3" onclick="disPlay(this)">3</button>
+            <button value="2" onclick="disPlay(this)">2</button>
+            <button value="1" onclick="disPlay(this)">1</button>
+            <button value="-"onclick="disPlay(this)">-</button>
+          </div>
+          <div class="rows" id="row-four">
+            <button value="." onclick="disPlay(this)">.</button>
+            <button value="0" onclick="disPlay(this)">0</button>
+            <button value="/" onclick="disPlay(this)">/</button>
+            <button value="*" onclick="disPlay(this)">x</button>
+          </div>
+          <div class="rows" id="row-five">
+            <button class="reset" onclick="resetAll()">RESET</button>
+            <button class="equals" onclick="calCulate()">=</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+      document.addEventListener('keydown', e => {
+        if (e.target.tagName === 'input' || e.target.tagName === 'textarea') {
+          return;
+        }
+
+        let key = e.key;
+        let code = e.code; 
+
+
+        if ((key >= '0' && key <= '9') || key === '.') {
+          e.preventDefault();
+          disPlay({ value: key });
+        }
+
+        else if (key === '+' || key === '-') {
+          e.preventDefault();
+          disPlay({ value: key });
+        }
+        else if (key === '/') { 
+          e.preventDefault();
+          disPlay({ value: key });
+        }
+        else if (key === '*') { 
+          e.preventDefault();
+          disPlay({ value: key });
+        }
+       
+        else if (code === 'NumpadAdd') {
+          e.preventDefault();
+          disPlay({ value: '+' });
+        }
+        else if (code === 'NumpadSubtract') {
+          e.preventDefault();
+          disPlay({ value: '-' });
+        }
+        else if (code === 'NumpadDivide') {
+          e.preventDefault();
+          disPlay({ value: '/' });
+        }
+        else if (code === 'NumpadMultiply') {
+          e.preventDefault();
+          disPlay({ value: '*' });
+        }
+        else if (code === 'NumpadDecimal') {
+          e.preventDefault();
+          disPlay({ value: '.' });
+        }
+        else if (code === 'NumpadEnter' || key === 'Enter') { 
+          e.preventDefault();
+          calCulate();
+        }
+        else if (key === 'Backspace') {
+          e.preventDefault();
+          deLETE();
+        } else if (key === 'Delete' || key === 'Escape') { 
+          e.preventDefault();
+          resetAll();
+        }
+      });
+      let body = document.body;
+      let toggleStages = document.querySelectorAll('.toggle-stages');
+
+      toggleStages.forEach((stage) => {
+          stage.addEventListener('click', () => {
+            body.setAttribute('color-theme', stage.getAttribute('data-theme'));
+          });
+        });
+
+let output = document.querySelector("#output");
+
+function disPlay(button){
+  let num = button.value;
+  if (output.textContent === "Error" ) {
+    output.textContent = num;
+  }
+  else if(output.textContent == "0" && num !== "."){
+    output.textContent = num;
+  }
+  else {
+    output.textContent += num;
+  }
+
+}
+
+  function calCulate() {
+    try {
+      let expression = output.textContent;
+      if (/[+\-*/]{2,}/.test(expression)) {
+        output.textContent = "Error";
+        return;
+      }
+      let result = eval(expression);
+      if (isNaN(result) || !isFinite(result)) {
+        output.textContent = "Error";
+      } else {
+        output.textContent = result;
+      }
+    } catch (e) {
+      output.textContent = "Error";
+    }
+  }
+
+
+   function resetAll(){
+    output.textContent = "0";
+   }
+
+   function deLETE() {
+      let strings = output.textContent.toString();
+      if (strings === "Error" || strings.length === 1) {
+        output.textContent = "0";
+      } else {
+        output.textContent = strings.slice(0, -1);
+      }
+    }
+
+  </script>
+</body>
+
+</html>
